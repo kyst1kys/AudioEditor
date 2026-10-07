@@ -19,6 +19,11 @@ target/
 *.iml
 *.ipr
 
+# H2 Database files
+*.mv.db
+*.lock.db
+*.trace.db
+
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/
