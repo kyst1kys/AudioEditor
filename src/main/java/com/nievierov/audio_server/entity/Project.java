@@ -1,4 +1,4 @@
-package com.nievierov.audio_editor.entity;
+package com.nievierov.audio_server.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;

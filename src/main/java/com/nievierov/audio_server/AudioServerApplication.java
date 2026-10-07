@@ -1,13 +1,13 @@
-package com.nievierov.audio_editor;
+package com.nievierov.audio_server;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class AudioEditorApplication {
+public class AudioServerApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(AudioEditorApplication.class, args);
+		SpringApplication.run(AudioServerApplication.class, args);
 	}
 
 }
