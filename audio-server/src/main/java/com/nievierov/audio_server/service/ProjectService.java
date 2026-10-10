@@ -17,7 +17,7 @@ public class ProjectService {
         return projectRepository.save(project);
     }
 
-    public Project openProject(String folderPath) {
+    public Project openProjectByPath(String folderPath) {
         return projectRepository.findByProjectFolderPath(folderPath)
                 .orElseGet(() -> {
                     String folderName = java.nio.file.Paths.get(folderPath).getFileName().toString();
