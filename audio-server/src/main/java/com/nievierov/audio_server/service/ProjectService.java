@@ -1,5 +1,6 @@
 package com.nievierov.audio_server.service;
 
+import com.nievierov.audio_server.dto.ProjectUpdatedDto;
 import com.nievierov.audio_server.entity.Project;
 import com.nievierov.audio_server.repository.ProjectRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,19 @@ public class ProjectService {
                     Project newProject = new Project(folderName, folderPath);
                     return projectRepository.save(newProject);
                 });
+    }
+
+    public Project updateProject(ProjectUpdatedDto updatedDto, UUID id) {
+        var project = getProjectById(id);
+
+        if (updatedDto.name() != null) {
+            project.setName(updatedDto.name());
+        }
+        if (updatedDto.sampleRate() != null) {
+            project.setSampleRate(updatedDto.sampleRate());
+        }
+
+        return projectRepository.save(project);
     }
 
     public List<Project> getAllProjects() {

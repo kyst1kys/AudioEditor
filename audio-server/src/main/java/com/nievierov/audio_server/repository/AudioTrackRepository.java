@@ -9,5 +9,5 @@ import java.util.UUID;
 
 @Repository
 public interface AudioTrackRepository extends JpaRepository<AudioTrack, Long> {
-    List<AudioTrackRepository> findByProjectId(UUID projectId);
+    List<AudioTrack> findAllByProjectId(UUID projectId);
 }

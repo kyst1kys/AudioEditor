@@ -1,6 +1,7 @@
 package com.nievierov.audio_server.controller;
 
 import com.nievierov.audio_server.dto.ProjectDto;
+import com.nievierov.audio_server.dto.ProjectUpdatedDto;
 import com.nievierov.audio_server.entity.Project;
 import com.nievierov.audio_server.mapper.ProjectMapper;
 import com.nievierov.audio_server.service.ProjectService;
@@ -39,6 +40,10 @@ public class ProjectController {
         var savedProject = projectService.createProject(project);
 
         return projectMapper.toDto(savedProject);
+    }
+    @PatchMapping("/{id}")
+    public ProjectDto updateProject(@RequestBody ProjectUpdatedDto projectUpdatedDto, @PathVariable UUID id) {
+        return projectMapper.toDto(projectService.updateProject(projectUpdatedDto, id));
     }
 
     @PostMapping("/open")
