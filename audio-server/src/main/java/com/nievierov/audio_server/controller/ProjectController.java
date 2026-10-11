@@ -8,6 +8,10 @@ import com.nievierov.audio_server.service.ProjectService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.UUID;
 
@@ -36,11 +40,24 @@ public class ProjectController {
 
     @PostMapping
     public ProjectDto createProject(@RequestBody ProjectDto projectDto){
+        Path fullPath = Paths.get(projectDto.folderPath(), projectDto.name());
+
+        try {
+            if (!Files.exists(fullPath)){
+                Files.createDirectories(fullPath);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Не вдалося створити папку проєкту: " + fullPath, e);
+        }
+
         var project = projectMapper.toEntity(projectDto);
+        project.setFolderPath(fullPath.toString());
+
         var savedProject = projectService.createProject(project);
 
         return projectMapper.toDto(savedProject);
     }
+
     @PatchMapping("/{id}")
     public ProjectDto updateProject(@RequestBody ProjectUpdatedDto projectUpdatedDto, @PathVariable UUID id) {
         return projectMapper.toDto(projectService.updateProject(projectUpdatedDto, id));

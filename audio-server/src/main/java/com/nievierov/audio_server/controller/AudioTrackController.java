@@ -2,7 +2,6 @@ package com.nievierov.audio_server.controller;
 
 import com.nievierov.audio_server.dto.AudioTrackDto;
 import com.nievierov.audio_server.dto.AudioTrackUpdatedDto;
-import com.nievierov.audio_server.entity.AudioTrack;
 import com.nievierov.audio_server.mapper.AudioTrackMapper;
 import com.nievierov.audio_server.service.AudioTrackService;
 import lombok.RequiredArgsConstructor;

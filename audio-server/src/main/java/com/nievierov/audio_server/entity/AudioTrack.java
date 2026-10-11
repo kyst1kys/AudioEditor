@@ -16,9 +16,9 @@ public class AudioTrack {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private double volume = 1.0;
+    private Double volume = 1.0;
 
-    private boolean isMuted = false;
+    private Boolean isMuted = false;
 
     @ManyToOne
     @JoinColumn(name = "project_id")

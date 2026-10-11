@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -23,17 +24,19 @@ public class Project {
     private String name;
 
     @Column(nullable = false)
-    private String projectFolderPath;
+    private String folderPath;
 
-    private LocalDateTime createdAt =  LocalDateTime.now();
+    @CreationTimestamp
+    @Column(updatable = false)
+    private LocalDateTime createdAt;
 
-    private int sampleRate = 44100;
+    private int sampleRate;
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL,  orphanRemoval = true)
     private List<AudioTrack> audioTracks;
 
-    public Project(String name, String projectFolderPath) {
+    public Project(String name, String folderPath) {
         this.name = name;
-        this.projectFolderPath = projectFolderPath;
+        this.folderPath = folderPath;
     }
 }

@@ -6,7 +6,7 @@ import java.util.UUID;
 public record ProjectDto(
         UUID id,
         String name,
-        String projectFolderPath,
-        int sampleRate,
+        String folderPath,
+        Integer sampleRate,
         LocalDateTime createdAt
 ) {}

@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface AudioClipRepository extends JpaRepository<AudioClip, Long> {
-    List<AudioClip> findByAudioTrackId(Long audioTrackId);
+    List<AudioClip> findAllByAudioTrackId(Long audioTrackId);
 }

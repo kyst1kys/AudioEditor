@@ -40,7 +40,7 @@ public class AudioTrackService {
             audioTrack.setVolume(updatedDto.volume());
         }
         if (updatedDto.isMuted() != null) {
-            audioTrack.setMuted(updatedDto.isMuted());
+            audioTrack.setIsMuted(updatedDto.isMuted());
         }
 
         return audioTrackRepository.save(audioTrack);
