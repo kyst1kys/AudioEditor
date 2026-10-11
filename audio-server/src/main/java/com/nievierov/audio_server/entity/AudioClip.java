@@ -19,9 +19,11 @@ public class AudioClip {
     @Column(nullable = false)
     private String sourceFilePath;
 
-    private long timelineStartMs;
+    private Long startTimeMs;
 
-    private long durationMs;
+    private Long durationMs;
+
+    private Long startOffsetMs;
 
     @ManyToOne
     @JoinColumn(name = "audio_track")

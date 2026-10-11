@@ -30,7 +30,7 @@ public class Project {
     @Column(updatable = false)
     private LocalDateTime createdAt;
 
-    private int sampleRate;
+    private Integer sampleRate;
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL,  orphanRemoval = true)
     private List<AudioTrack> audioTracks;

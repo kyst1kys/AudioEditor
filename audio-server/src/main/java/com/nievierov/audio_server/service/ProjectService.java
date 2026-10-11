@@ -2,6 +2,7 @@ package com.nievierov.audio_server.service;
 
 import com.nievierov.audio_server.dto.ProjectUpdatedDto;
 import com.nievierov.audio_server.entity.Project;
+import com.nievierov.audio_server.mapper.ProjectMapper;
 import com.nievierov.audio_server.repository.ProjectRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ProjectService {
     private final ProjectRepository projectRepository;
+    private final ProjectMapper projectMapper;
 
     public Project createProject(Project project) {
         return projectRepository.save(project);
@@ -30,12 +32,7 @@ public class ProjectService {
     public Project updateProject(ProjectUpdatedDto updatedDto, UUID id) {
         var project = getProjectById(id);
 
-        if (updatedDto.name() != null) {
-            project.setName(updatedDto.name());
-        }
-        if (updatedDto.sampleRate() != null) {
-            project.setSampleRate(updatedDto.sampleRate());
-        }
+        projectMapper.updateEntityFromDto(updatedDto, project);
 
         return projectRepository.save(project);
     }

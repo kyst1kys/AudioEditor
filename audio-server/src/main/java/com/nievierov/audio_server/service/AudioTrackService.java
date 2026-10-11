@@ -2,6 +2,7 @@ package com.nievierov.audio_server.service;
 
 import com.nievierov.audio_server.dto.AudioTrackUpdatedDto;
 import com.nievierov.audio_server.entity.AudioTrack;
+import com.nievierov.audio_server.mapper.AudioTrackMapper;
 import com.nievierov.audio_server.repository.AudioTrackRepository;
 import com.nievierov.audio_server.repository.ProjectRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import java.util.UUID;
 public class AudioTrackService {
     private final AudioTrackRepository audioTrackRepository;
     private final ProjectRepository projectRepository;
+    private final AudioTrackMapper audioTrackMapper;
 
     public AudioTrack getAudioTrackById(Long id) {
         return audioTrackRepository.findById(id)
@@ -36,12 +38,7 @@ public class AudioTrackService {
     public AudioTrack updateAudioTrack(Long id, AudioTrackUpdatedDto updatedDto) {
         AudioTrack audioTrack = getAudioTrackById(id);
 
-        if (updatedDto.volume() != null) {
-            audioTrack.setVolume(updatedDto.volume());
-        }
-        if (updatedDto.isMuted() != null) {
-            audioTrack.setIsMuted(updatedDto.isMuted());
-        }
+        audioTrackMapper.updateEntityFromDto(updatedDto, audioTrack);
 
         return audioTrackRepository.save(audioTrack);
     }

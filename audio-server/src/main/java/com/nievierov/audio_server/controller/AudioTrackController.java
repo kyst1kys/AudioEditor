@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/app/v1/audio_tracks")
+@RequestMapping("/app/v1/tracks")
 @RequiredArgsConstructor
 public class AudioTrackController {
 
@@ -34,17 +34,19 @@ public class AudioTrackController {
                 .toList();
     }
 
-    @PatchMapping("/{id}")
-    public AudioTrackDto updateAudioTrack(@PathVariable Long id, @RequestBody AudioTrackUpdatedDto updatedDto) {
-        return  audioTrackMapper.toDto(audioTrackService.updateAudioTrack(id, updatedDto));
-    }
-
     @PostMapping
     public AudioTrackDto addAudioTrack(@RequestParam UUID projectId) {
         var savedAudioTrack = audioTrackService.addAudioTrack(projectId);
 
         return audioTrackMapper.toDto(savedAudioTrack);
     }
+
+    @PatchMapping("/{id}")
+    public AudioTrackDto updateAudioTrack(@PathVariable Long id, @RequestBody AudioTrackUpdatedDto updatedDto) {
+        return  audioTrackMapper.toDto(audioTrackService.updateAudioTrack(id, updatedDto));
+    }
+
+
 
     @DeleteMapping("/{id}")
     public void deleteAudioTrack(@PathVariable Long id) {
