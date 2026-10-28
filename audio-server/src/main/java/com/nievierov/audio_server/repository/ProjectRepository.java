@@ -10,4 +10,5 @@ import java.util.UUID;
 @Repository
 public interface ProjectRepository extends JpaRepository<Project, UUID> {
     public Optional<Project> findByFolderPath(String projectFolderPath);
+    public boolean existsByFolderPath(String projectFolderPath);
 }

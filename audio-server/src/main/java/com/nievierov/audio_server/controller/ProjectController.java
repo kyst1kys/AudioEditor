@@ -40,20 +40,7 @@ public class ProjectController {
 
     @PostMapping
     public ProjectDto createProject(@RequestBody ProjectDto projectDto){
-        Path fullPath = Paths.get(projectDto.folderPath(), projectDto.name());
-
-        try {
-            if (!Files.exists(fullPath)){
-                Files.createDirectories(fullPath);
-            }
-        } catch (IOException e) {
-            throw new RuntimeException("Не вдалося створити папку проєкту: " + fullPath, e);
-        }
-
-        var project = projectMapper.toEntity(projectDto);
-        project.setFolderPath(fullPath.toString());
-
-        var savedProject = projectService.createProject(project);
+        var savedProject = projectService.createProject(projectDto);
 
         return projectMapper.toDto(savedProject);
     }
