@@ -36,12 +36,8 @@ public class ProjectService {
             throw new RuntimeException("Не вдалося створити папку проєкту: " + fullPath, e);
         }
 
-
-
         var project = projectMapper.toEntity(projectDto);
         project.setFolderPath(fullPath.toString());
-
-
 
         return projectRepository.save(project);
     }

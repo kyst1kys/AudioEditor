@@ -3,6 +3,6 @@ module com.nievierov.audio_client.audioclient {
     requires javafx.fxml;
     requires java.net.http;
 
-    opens com.nievierov.audio_client.audioclient to javafx.fxml;
-    exports com.nievierov.audio_client.audioclient;
+    opens com.nievierov.client.ui to javafx.fxml;
+    exports com.nievierov.client.ui;
 }

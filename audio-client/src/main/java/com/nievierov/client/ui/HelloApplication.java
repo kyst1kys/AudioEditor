@@ -1,5 +1,6 @@
-package com.nievierov.audio_client.audioclient;
+package com.nievierov.client.ui;
 
+import com.nievierov.client.service.AudioApiService;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -16,8 +17,7 @@ import java.net.http.HttpResponse;
 
 public class HelloApplication extends Application {
 
-    private final HttpClient httpClient = HttpClient.newHttpClient();
-    private final String BASE_URL = "http://localhost:8080/app/v1";
+    private final AudioApiService audioApiService = new AudioApiService();
 
     @Override
     public void start(Stage stage) {
@@ -60,29 +60,34 @@ public class HelloApplication extends Application {
 
         // Логіка кнопок Форми 1
         createProjectBtn.setOnAction(e -> {
-            String jsonBody = """
-                    {
-                      "name": "%s",
-                      "folderPath": "%s",
-                      "sampleRate": "%s"
-                    }
-                    """.formatted(nameField.getText(), pathField.getText(), sampleRateField.getText());
+            String name = nameField.getText().trim();
+            String path = pathField.getText().trim();
+            String sampleRateStr = sampleRateField.getText().trim();
 
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(BASE_URL + "/projects"))
-                    .header("Content-Type", "application/json")
-                    .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
-                    .build();
+            if (name.isBlank() || path.isBlank() || sampleRateStr.isBlank()) {
+                projectsArea.setText("Помилка: Усі поля повинні бути заповнені!");
+                return;
+            }
 
-            sendRequest(request, projectsArea);
+            projectsArea.setText("-> Відправка POST на /projects...\n");
+
+            audioApiService.createProject(name, path, sampleRateStr)
+                    .thenAccept(res -> Platform.runLater(() -> projectsArea.setText(res)))
+                    .exceptionally(ex -> {
+                        Platform.runLater(() -> projectsArea.setText("Помилка: " + ex.getMessage()));
+                        return null;
+                    });
         });
 
         getAllProjectsBtn.setOnAction(e -> {
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(BASE_URL + "/projects"))
-                    .GET()
-                    .build();
-            sendRequest(request, projectsArea);
+            projectsArea.setText("-> Відправка GET на /projects...\n");
+
+            audioApiService.getAllProjects()
+                    .thenAccept(res -> Platform.runLater(() -> projectsArea.setText(res)))
+                    .exceptionally(ex -> {
+                        Platform.runLater(() -> projectsArea.setText("Помилка: " + ex.getMessage()));
+                        return null;
+                    });
         });
 
         // -------------------------------------------------------------
@@ -93,11 +98,6 @@ public class HelloApplication extends Application {
 
         TextField projectIdField = new TextField();
         projectIdField.setPromptText("UUID проєкту (напр. 550e8400-e29b-41d4-a716-446655440000)");
-
-        TextField volumeField = new TextField("1.0");
-        volumeField.setPromptText("Гучність (0.0 - 1.0)");
-
-        CheckBox mutedCheckBox = new CheckBox("Заглушити (isMuted)");
 
         Button createTrackBtn = new Button("Створити доріжку (POST)");
         Button getTracksBtn = new Button("Отримати доріжки проєкту (GET)");
@@ -111,10 +111,7 @@ public class HelloApplication extends Application {
         tracksGrid.setVgap(10);
         tracksGrid.add(new Label("Project UUID:"), 0, 0);
         tracksGrid.add(projectIdField, 1, 0);
-        tracksGrid.add(new Label("Гучність (volume):"), 0, 1);
-        tracksGrid.add(volumeField, 1, 1);
-        tracksGrid.add(mutedCheckBox, 1, 2);
-        tracksGrid.add(createTrackBtn, 1, 3);
+        tracksGrid.add(createTrackBtn, 1, 1);
 
         VBox tracksLayout = new VBox(10, tracksGrid, getTracksBtn, tracksArea);
         tracksLayout.setPadding(new Insets(15));
@@ -129,51 +126,37 @@ public class HelloApplication extends Application {
                 return;
             }
 
-            double volume = 1.0;
-            try {
-                if (!volumeField.getText().isBlank()) {
-                    volume = Double.parseDouble(volumeField.getText().trim());
-                }
-            } catch (NumberFormatException ex) {
-                tracksArea.appendText("Помилка: Volume має бути дробовим числом (наприклад, 0.8)!\n");
-                return;
-            }
+            tracksArea.setText("-> Відправка POST на /tracks?projectId=" + projId + "...\n");
 
-            String jsonBody = """
-            {
-              "projectId": "%s",
-              "volume": %s,
-              "isMuted": %b
-            }
-            """.formatted(projId, String.valueOf(volume), mutedCheckBox.isSelected());
+            audioApiService.createTrack(projId)
+                    .thenAccept(res -> Platform.runLater(() -> tracksArea.setText(res)))
+                    .exceptionally(ex -> {
+                        Platform.runLater(() -> tracksArea.setText("Помилка: " + ex.getMessage()));
+                        return null;
+                    });
 
-            String url = BASE_URL + "/tracks?projectId=" + projId;
-
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(url)) // або твоя адреса ендпоінту доріжок
-                    .header("Content-Type", "application/json")
-                    .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
-                    .build();
-
-            sendRequest(request, tracksArea);
         });
 
         // Логіка кнопки GET (Отримання доріжок для конкретного проєкту)
         getTracksBtn.setOnAction(e -> {
             String projId = projectIdField.getText().trim();
-            String url = BASE_URL + "/tracks?projectId=" + projId;
+
             // Захист: якщо поле порожнє — НЕ відправляємо запит
             if (projId.isBlank()) {
                 tracksArea.setText("Помилка: Спочатку вкажіть UUID проєкту у полі Project UUID!\n");
                 return;
             }
 
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(url))
-                    .GET()
-                    .build();
-            sendRequest(request, tracksArea);
+            tracksArea.setText("-> Відправка GET на /tracks?projectId=" + projId + "...\n");
+
+            audioApiService.getAllTracks(projId)
+                    .thenAccept(res -> Platform.runLater(() -> tracksArea.setText(res)))
+                    .exceptionally(ex -> {
+                        Platform.runLater(() -> tracksArea.setText("Помилка: " + ex.getMessage()));
+                        return null;
+                    });
         });
+
         // -------------------------------------------------------------
         // Збирання головного вікна
         // -------------------------------------------------------------
@@ -182,17 +165,5 @@ public class HelloApplication extends Application {
         stage.setTitle("DAW Client — Повний цикл роботи з БД");
         stage.setScene(scene);
         stage.show();
-    }
-
-    private void sendRequest(HttpRequest request, TextArea console) {
-        console.appendText("-> Відправка " + request.method() + " на " + request.uri() + "\n");
-        httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
-                .thenAccept(response -> Platform.runLater(() ->
-                        console.appendText("HTTP " + response.statusCode() + " OK:\n" + response.body() + "\n\n")
-                ))
-                .exceptionally(ex -> {
-                    Platform.runLater(() -> console.appendText("Помилка: " + ex.getMessage() + "\n\n"));
-                    return null;
-                });
     }
 }

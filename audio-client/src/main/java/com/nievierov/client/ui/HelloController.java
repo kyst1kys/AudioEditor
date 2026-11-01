@@ -1,4 +1,4 @@
-package com.nievierov.audio_client.audioclient;
+package com.nievierov.client.ui;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
