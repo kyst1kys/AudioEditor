@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="520.0" prefWidth="620.0"
+            xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1">
+
+    <TabPane prefHeight="520.0" prefWidth="620.0"
+             tabClosingPolicy="UNAVAILABLE"
+             AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0"
+             AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+
+        <Tab text="1. Проєкти (Projects)">
+            <fx:include source="project-tab.fxml"/>
+        </Tab>
+        <Tab text="2. Аудіодоріжки (Audio Tracks)">
+            <fx:include source="track-tab.fxml"/>
+        </Tab>
+        <Tab text="3. Аудіокліпи &amp; Рушій (БД)">
+            <fx:include source="engine-tab.fxml"/>
+        </Tab>
+
+
+    </TabPane>
+
+</AnchorPane>

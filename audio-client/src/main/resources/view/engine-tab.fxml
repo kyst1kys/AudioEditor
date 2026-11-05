@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="480.0" prefWidth="600.0"
+            xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.nievierov.client.controller.EngineController">
+
+    <VBox spacing="12.0"
+          AnchorPane.topAnchor="15.0"
+          AnchorPane.leftAnchor="15.0"
+          AnchorPane.rightAnchor="15.0">
+
+        <HBox spacing="10.0" alignment="CENTER_LEFT">
+            <Label text="Track ID:"/>
+            <TextField fx:id="trackIdInput" promptText="ID доріжки в БД" prefWidth="120.0"/>
+            <Button text="Завантажити з БД (GET)" onAction="#handleLoadTrack"/>
+        </HBox>
+
+        <Separator prefWidth="200.0" />
+
+        <HBox spacing="10.0" alignment="CENTER_LEFT">
+            <Button text="📁 Додати WAV кліп на сервер (POST)" onAction="#handleAddClip"/>
+            <CheckBox fx:id="muteCheckBox" text="Mute track" onAction="#handleMuteToggle"/>
+            <Button fx:id="playBtn" text="▶ Play Track" onAction="#handlePlay"/>
+            <Button fx:id="stopBtn" text="⏹ Stop" disable="true" onAction="#handleStop"/>
+        </HBox>
+
+        <Label fx:id="engineStatusLabel" text="Статус: Вкажіть ID доріжки з БД" style="-fx-font-weight: bold;"/>
+
+        <Label text="Кліпи доріжки у БД:"/>
+        <TextArea fx:id="clipsArea" editable="false" prefHeight="180.0" prefWidth="570.0"/>
+    </VBox>
+
+</AnchorPane>

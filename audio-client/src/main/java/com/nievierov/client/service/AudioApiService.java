@@ -4,7 +4,6 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 public class AudioApiService {
@@ -59,12 +58,46 @@ public class AudioApiService {
         return sendAsync(request);
     }
 
+    public CompletableFuture<String> createClip(String trackId, String filePath, long durationMs) {
+        String url = BASE_URL + "/clips?trackId=" + trackId;
+
+        String jsonBody = """
+            {
+              "sourceFilePath": "%s",
+              "durationMs": %d,
+              "trackId": %d
+            }
+            """.formatted(escapeJson(filePath), durationMs, Long.parseLong(trackId));
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
+                .build();
+
+        return sendAsync(request);
+    }
+
+    public CompletableFuture<String> getClipsByTrack(String trackId) {
+        String url = BASE_URL + "/clips?trackId=" + trackId;
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(url))
+                .GET()
+                .build();
+
+        return sendAsync(request);
+    }
+
     private CompletableFuture<String> sendAsync(HttpRequest request) {
         return httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
                 .thenApply(response -> "HTTP " + response.statusCode() + " OK:\n" + response.body());
     }
 
     private String escapeJson(String input) {
-        return input == null ? "" : input.replace("\"", "\\\"");
+        if (input == null) return "";
+        return input.replace("\\", "/") // Замінюємо зворотні Windows-слеші (\) на прямі (/)
+                .replace("\"", "\\\""); // Екрануємо лапки, якщо вони є в назві
     }
 }
+

@@ -1,4 +1,4 @@
-package com.nievierov.client.ui;
+package com.nievierov.client;
 
 import javafx.application.Application;
 
